@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bio-Tone</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+
+    <div class="container">
+        <h1>🧠 Bio-Tone</h1>
+        <p class="subtitle">Your personal mental wellness companion</p>
+
+        {% if streak > 0 %}
+        <div class="streak-box">
+            {% if streak == 1 %}
+                🌱 Day 1 — good to have you here
+            {% elif streak < 5 %}
+                🔥 {{ streak }} day streak — keep going
+            {% elif streak < 10 %}
+                ⚡ {{ streak }} days strong — you're building something real
+            {% else %}
+                🏆 {{ streak }} day streak — that's serious consistency
+            {% endif %}
+        </div>
+        {% endif %}
+
+        <form action="/analyze" method="POST">
+            <p class="input-label">How are you feeling right now?</p>
+            <textarea
+                name="user_text"
+                rows="4"
+                placeholder="Be honest, this is just for you...">
+            </textarea>
+
+            <p class="input-label">Private journal note (optional)</p>
+            <textarea
+                name="journal_note"
+                rows="3"
+                placeholder="Anything else on your mind? This won't be analyzed...">
+            </textarea>
+
+            <button type="submit">Analyze My Mood</button>
+        </form>
+
+        <a href="/history" class="history-btn">📋 View Mood History</a>
+    </div>
+
+</body>
+</html>

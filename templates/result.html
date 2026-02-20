@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bio-Tone Result</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+
+    <div class="container">
+        <h1>🧠 Bio-Tone</h1>
+
+        {% if crisis %}
+        <div class="crisis-box">
+            <p class="crisis-title">💛 Hey, we've noticed something</p>
+            <p class="crisis-msg">
+                You've been feeling low for a while now. 
+                That takes courage to keep showing up. 
+                You don't have to carry this alone.
+            </p>
+            <div class="crisis-help">
+                <p class="crisis-help-title">📞 Talk to someone right now</p>
+                <p class="crisis-line">iCall (India) — <strong>9152987821</strong></p>
+                <p class="crisis-line">Available Mon–Sat, 8am–10pm</p>
+            </div>
+            <div class="breathing-tip">
+                <p class="crisis-help-title">🌬️ Try this right now</p>
+                <p class="crisis-line">Breathe in for 4 → Hold for 4 → Out for 4</p>
+                <p class="crisis-line">Repeat 3 times. It genuinely helps.</p>
+            </div>
+        </div>
+        {% endif %}
+
+        <div class="report-header">
+            <p class="report-title">{{ header }}</p>
+        </div>
+
+        <div class="mood-image-box">
+            <img src="{{ url_for('static', filename=image) }}" 
+                 alt="mood image" 
+                 class="mood-image"/>
+        </div>
+
+        <div class="result-box">
+            <p class="label">You wrote:</p>
+            <p class="user-text">{{ text }}</p>
+
+            <p class="label">Mood Detection:</p>
+            <p class="mood">{{ mood }}</p>
+
+            <p class="label">Stress Level:</p>
+            <p class="level">{{ level }}</p>
+        </div>
+
+        <div class="insight-box">
+            <p class="insight-title">💡 Personalized Insight</p>
+            <p class="insight-text">{{ insight }}</p>
+        </div>
+
+        {% if note %}
+        <div class="journal-box">
+            <p class="label">📓 Your Private Note:</p>
+            <p class="journal-text">{{ note }}</p>
+        </div>
+        {% endif %}
+        
+        <div class="video-box">
+            <p class="video-title">🎥 Watch This For You</p>
+            {% for video in videos %}
+            <a href="{{ video.url }}" target="_blank" class="video-card">
+                <div class="video-info">
+                    <p class="video-name">{{ video.title }}</p>
+                    <p class="video-channel">{{ video.channel }}</p>
+                </div>
+                <span class="video-arrow">▶</span>
+            </a>
+            {% endfor %}
+        </div>
+
+        <a href="/history" class="back-btn">📋 View Mood History</a>
+        <br><br>
+        <a href="/" class="back-btn">← Analyze again</a>
+    </div>
+
+</body>
+</html>
