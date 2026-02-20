@@ -294,16 +294,12 @@ def history():
 @app.route('/register', methods=['GET', 'POST'])
 def register():
     if request.method == 'POST':
-        username = request.form['username'].strip()
         email = request.form['email'].strip()
         password = request.form['password'].strip()
-        if User.query.filter_by(username=username).first():
-            flash('Username already taken. Try another.')
-            return redirect(url_for('register'))
         if User.query.filter_by(email=email).first():
             flash('Email already registered. Try logging in.')
             return redirect(url_for('register'))
-        new_user = User(username=username, email=email, password=generate_password_hash(password))
+        new_user = User(username=email, email=email, password=generate_password_hash(password))
         db.session.add(new_user)
         db.session.commit()
         login_user(new_user)
