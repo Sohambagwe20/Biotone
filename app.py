@@ -372,6 +372,7 @@ def reset_password(email):
     return render_template('reset_password.html', email=email)
 
 with app.app_context():
+    db.drop_all()
     db.create_all()
 
 if __name__ == '__main__':
