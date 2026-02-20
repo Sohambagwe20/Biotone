@@ -281,7 +281,19 @@ def logout():
     logout_user()
     return redirect(url_for('login'))
 
+with app.app_context():
+    db.create_all()
+
 if __name__ == '__main__':
-    with app.app_context():
-        db.create_all()
     app.run(debug=True)
+    
+# ```
+
+# The difference is small but important — `db.create_all()` now runs **outside** the `if __name__` block, so it runs every time the app starts on Render too, not just locally.
+
+# Save the file then run:
+# ```
+# git add .
+# git commit -m "Fix database initialization"
+# git push
+   
