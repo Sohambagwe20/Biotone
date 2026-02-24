@@ -6,9 +6,8 @@ from vaderSentiment.vaderSentiment import SentimentIntensityAnalyzer
 from datetime import datetime, date, timedelta
 import os
 import random
-import smtplib
-from email.mime.text import MIMEText
-from email.mime.multipart import MIMEMultipart
+from sendgrid import SendGridAPIClient
+from sendgrid.helpers.mail import Mail
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'biotone-secret-key-2026'
@@ -73,31 +72,26 @@ def check_crisis(entries):
     return all(e.level == 'High Stress' for e in entries[:3])
 
 def send_otp_email(to_email, otp):
-    msg = MIMEMultipart()
-    msg['From'] = MAIL_EMAIL
-    msg['To'] = to_email
-    msg['Subject'] = 'Bio-Tone — Your OTP Code'
+    message = Mail(
+        from_email='biotone108@gmail.com',
+        to_emails=to_email,
+        subject='Bio-Tone — Your OTP Code',
+        plain_text_content=f"""
+Hi there,
 
-    body = f"""
-    Hi there,
+Your Bio-Tone OTP code is:
 
-    Your Bio-Tone OTP code is:
+{otp}
 
-    {otp}
+This code expires in 10 minutes.
+If you didn't request this, ignore this email.
 
-    This code expires in 10 minutes.
-    If you didn't request this, ignore this email.
-
-    — Bio-Tone Team
-    """
-    msg.attach(MIMEText(body, 'plain'))
-
+— Bio-Tone Team
+        """
+    )
     try:
-        server = smtplib.SMTP('smtp.gmail.com', 587)
-        server.starttls()
-        server.login(MAIL_EMAIL, MAIL_PASSWORD)
-        server.sendmail(MAIL_EMAIL, to_email, msg.as_string())
-        server.quit()
+        sg = SendGridAPIClient(os.environ.get('SENDGRID_API_KEY'))
+        sg.send(message)
         return True
     except Exception as e:
         print(f"Email error: {e}")
@@ -309,15 +303,22 @@ def register():
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
-        username = request.form['username'].strip()
+        email = request.form['email'].strip()
         password = request.form['password'].strip()
-        user = User.query.filter_by(username=username).first()
+        user = User.query.filter_by(email=email).first()
         if user and check_password_hash(user.password, password):
             login_user(user)
             return redirect(url_for('home'))
-        flash('Wrong username or password.')
+        flash('Wrong email or password.')
         return redirect(url_for('login'))
     return render_template('login.html')
+# ```
+
+# Save, push to GitHub:
+# ```
+# git add .
+# git commit -m "Switch login to use email"
+# git push
 
 @app.route('/logout')
 @login_required
