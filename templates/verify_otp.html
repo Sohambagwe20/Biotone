@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bio-Tone — Verify OTP</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h1>🧠 Bio-Tone</h1>
+        <p class="subtitle">Enter your OTP</p>
+
+        {% with messages = get_flashed_messages() %}
+            {% if messages %}
+                <p class="error-msg">{{ messages[0] }}</p>
+            {% endif %}
+        {% endwith %}
+
+        <p class="input-label">OTP sent to {{ email }}</p>
+
+        <form action="/verify-otp/{{ email }}" method="POST">
+            <p class="input-label">6-digit OTP code</p>
+            <input type="text" name="otp" placeholder="Enter OTP" maxlength="6" required>
+
+            <button type="submit">Verify OTP</button>
+        </form>
+
+        <p class="auth-link">Didn't get it? <a href="/forgot-password">Try again</a></p>
+    </div>
+</body>
+</html>
